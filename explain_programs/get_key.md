@@ -10,3 +10,4 @@ settings = termios.tcgetattr(sys.stdin)
 ```
 
 `termios.tcgetattr(fd?)`で
+<!-- @note tcgetattrで取得した値を覗いてみる -->
