@@ -7,7 +7,7 @@ import tty
 def get_key():
     """Get the first character input from the keyboard."""
     settings = termios.tcgetattr(sys.stdin)
-    tty.setraw(sys.stdin.fileno())
+    tty.setcbreak(sys.stdin)
 
     rlist, _, _ = select.select([sys.stdin], [], [])
     if rlist:
