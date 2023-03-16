@@ -98,7 +98,11 @@ def main():
     elif key == 's':
         target_linear_velocity = 0.0
 
-    teleop_burger.set_linear_velocity(target_linear_velocity)
+    teleop_burger.set_linear_velocity([target_linear_velocity, 0.0, 0.0])
+    teleop_burger.publish_velocity()
+
+    teleop_burger.set_angular_velocity([0.0, 0.0, 0.0])
+    teleop_burger.set_linear_velocity([0.0, 0.0, 0.0])
     teleop_burger.publish_velocity()
 
     print('end')
