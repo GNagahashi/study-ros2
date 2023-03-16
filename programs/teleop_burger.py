@@ -94,6 +94,7 @@ def main():
 
     key = teleop_burger.get_key()
     if key == 'w':
+        # @note わざわざチェックとセットを別にする必要はないのでは？(set_..._velocity()の中でcheck_...をする)
         target_linear_velocity = teleop_burger.check_linear_limit_velocity(0.2)
     elif key == 's':
         target_linear_velocity = 0.0
@@ -101,6 +102,7 @@ def main():
     teleop_burger.set_linear_velocity([target_linear_velocity, 0.0, 0.0])
     teleop_burger.publish_velocity()
 
+    # @note set_...の引数がリストであることをわかりやすくしたい
     teleop_burger.set_angular_velocity([0.0, 0.0, 0.0])
     teleop_burger.set_linear_velocity([0.0, 0.0, 0.0])
     teleop_burger.publish_velocity()
