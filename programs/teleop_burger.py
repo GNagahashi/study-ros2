@@ -20,13 +20,28 @@ class TeleopBurger(Node):
     ANG_VEL_STEP_SIZE = 0.1
     LIN_VEL_STEP_SIZE = 0.01
 
+    # @todo adjust this message
+    MSG = """
+    Control Your TurtleBot3!
+    ---------------------------
+    Moving around:
+
+            w
+        a   s   d
+
+    w/x : increase/decrease linear velocity (-0.22 ~ 0.22)
+    a/d : increase/decrease angular velocity (-2.84 ~ 2.84)
+    space key: force stop
+    CTRL-C to quit
+    """
+
     def __init__(self):
         """Telemetry operation of TurtleBot3(burger) with a keyboard"""
         super().__init__('teleop_burger')
         self.__publisher = self.create_publisher(Twist, '/cmd_vel', QoSProfile(depth = 10))
         self.__twist = Twist()
-        self.set_angular_velocity([0.0, 0.0, 0.0])
-        self.set_linear_velocity([0.0, 0.0, 0.0])
+        self.set_angular_velocity(0.0, 0.0, 0.0)
+        self.set_linear_velocity(0.0, 0.0, 0.0)
 
     def __constrain(self, input_vel, low_bound, high_bound):
         """Adjust velocity"""
@@ -49,108 +64,105 @@ class TeleopBurger(Node):
 
     def get_current_velocity(self):
         """Return current velocity: (angular, linear)"""
-        angular = [self.__twist.angular.x, self.__twist.angular.y, self.__twist.angular.z]
-        linear = [self.__twist.linear.x, self.__twist.linear.y, self.__twist.linear.z]
+        angular = dict(x = self.__twist.angular.x, y = self.__twist.angular.y, z = self.__twist.angular.z)
+        linear = dict(x = self.__twist.linear.x, y = self.__twist.linear.y, z = self.__twist.linear.z)
         return (angular, linear)
 
 
     def get_key(self):
         """Get the first character input from a keyboard"""
+        key = ''
         settings = termios.tcgetattr(sys.stdin)
         tty.setcbreak(sys.stdin)
 
-        rlist, _, _ = select.select([sys.stdin], [], [], 0.1)
-        if rlist:
-            key = sys.stdin.read(1)
-        else:
-            key = ''
+        try:
+            rlist, _, _ = select.select([sys.stdin], [], [], 0.1)
+            if rlist:
+                key = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
 
-        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
         return key
 
-    def print_velocity(self):
-        pass
+    def print_velocity(self, velocity):
+        """Print velocity"""
+        print('currentry:\n\tangular velocity: {}\n\tlinear velocity: {}'.format(velocity[0], velocity[1]))
 
     def publish_velocity(self):
         """Send velocity to the topic"""
         self.__publisher.publish(self.__twist)
         # self.get_logger().info('Publishing: {}'.format(self.__twist))
 
-    def set_angular_velocity(self, velocity):
+    def set_angular_velocity(self, x, y, z):
         """Set the value of Twist.angular"""
-        self.__twist.angular.x = velocity[0]
-        self.__twist.angular.y = velocity[1]
-        self.__twist.angular.z = velocity[2]
+        self.__twist.angular.x = x
+        self.__twist.angular.y = y
+        self.__twist.angular.z = z
 
-    def set_linear_velocity(self, velocity):
+    def set_linear_velocity(self, x, y, z):
         """Set the value of Twist.linear"""
-        self.__twist.linear.x = velocity[0]
-        self.__twist.linear.y = velocity[1]
-        self.__twist.linear.z = velocity[2]
+        self.__twist.linear.x = x
+        self.__twist.linear.y = y
+        self.__twist.linear.z = z
 
 
 def main():
     rclpy.init()
     teleop_burger = TeleopBurger()
 
-    print('start')
+    print(teleop_burger.MSG)
 
     target_lin_vel_x = 0.0
     target_ang_vel_z = 0.0
 
     try:
         while(1):
+            # get current velocity
             current_ang_vel, current_lin_vel = teleop_burger.get_current_velocity()
 
+            # get input from a keyboard
             key = teleop_burger.get_key()
 
             if key == 'w':
-                target_ang_vel_z = current_ang_vel[2]
-                target_lin_vel_x = teleop_burger.check_linear_limit_velocity(current_lin_vel[0] + teleop_burger.LIN_VEL_STEP_SIZE)
+                # forward
+                target_ang_vel_z = current_ang_vel['z']
+                target_lin_vel_x = teleop_burger.check_linear_limit_velocity(current_lin_vel['x'] + teleop_burger.LIN_VEL_STEP_SIZE)
             elif key == 'a':
-                target_ang_vel_z = teleop_burger.check_angular_limit_velocity(current_ang_vel[2] + teleop_burger.ANG_VEL_STEP_SIZE)
-                target_lin_vel_x = current_lin_vel[0]
+                # left rotation
+                target_ang_vel_z = teleop_burger.check_angular_limit_velocity(current_ang_vel['z'] + teleop_burger.ANG_VEL_STEP_SIZE)
+                target_lin_vel_x = current_lin_vel['x']
             elif key == 's':
-                target_ang_vel_z = current_ang_vel[2]
-                target_lin_vel_x = teleop_burger.check_linear_limit_velocity(current_lin_vel[0] - teleop_burger.LIN_VEL_STEP_SIZE)
+                # backward
+                target_ang_vel_z = current_ang_vel['z']
+                target_lin_vel_x = teleop_burger.check_linear_limit_velocity(current_lin_vel['x'] - teleop_burger.LIN_VEL_STEP_SIZE)
             elif key == 'd':
-                target_ang_vel_z = teleop_burger.check_angular_limit_velocity(current_ang_vel[2] - teleop_burger.ANG_VEL_STEP_SIZE)
-                target_lin_vel_x = current_lin_vel[0]
+                # right rotation
+                target_ang_vel_z = teleop_burger.check_angular_limit_velocity(current_ang_vel['z'] - teleop_burger.ANG_VEL_STEP_SIZE)
+                target_lin_vel_x = current_lin_vel['x']
             elif key == ' ':
+                # stop
                 target_ang_vel_z = 0.0
                 target_lin_vel_x = 0.0
             else:
-                target_ang_vel_z = current_ang_vel[2]
-                target_lin_vel_x = current_lin_vel[0]
+                # without change
+                target_ang_vel_z = current_ang_vel['z']
+                target_lin_vel_x = current_lin_vel['x']
 
-            teleop_burger.set_angular_velocity([0.0, 0.0, target_ang_vel_z])
-            teleop_burger.set_linear_velocity([target_lin_vel_x, 0.0, 0.0])
+            # update velocity
+            teleop_burger.set_angular_velocity(0.0, 0.0, target_ang_vel_z)
+            teleop_burger.set_linear_velocity(target_lin_vel_x, 0.0, 0.0)
 
+            # if you change the velocity, print those values
+            if (target_ang_vel_z != current_ang_vel['z']) or (target_lin_vel_x != current_lin_vel['x']):
+                teleop_burger.print_velocity(teleop_burger.get_current_velocity())
+
+            # publish message
             teleop_burger.publish_velocity()
     finally:
-        teleop_burger.set_angular_velocity([0.0, 0.0, 0.0])
-        teleop_burger.set_linear_velocity([0.0, 0.0, 0.0])
+        # before exiting this program, stop TB3
+        teleop_burger.set_angular_velocity(0.0, 0.0, 0.0)
+        teleop_burger.set_linear_velocity(0.0, 0.0, 0.0)
         teleop_burger.publish_velocity()
-
-    print('end')
-
-    # key = teleop_burger.get_key()
-    # if key == 'w':
-    #     # @todo わざわざチェックとセットを別にする必要はないのでは？(set_..._velocity()の中でcheck_...をする)
-    #     target_linear_velocity = teleop_burger.check_linear_limit_velocity(0.2)
-    # elif key == 's':
-    #     target_linear_velocity = 0.0
-
-    # teleop_burger.set_linear_velocity([target_linear_velocity, 0.0, 0.0])
-    # teleop_burger.publish_velocity()
-
-    # # @todo set_...の引数がリストであることをわかりやすくしたい
-    # teleop_burger.set_angular_velocity([0.0, 0.0, 0.0])
-    # teleop_burger.set_linear_velocity([0.0, 0.0, 0.0])
-    # teleop_burger.publish_velocity()
-
-    # print('end')
-    # pass
 
 
 if __name__ == '__main__':
