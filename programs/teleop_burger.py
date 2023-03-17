@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# references:
+# https://github.com/ROBOTIS-GIT/turtlebot3/blob/foxy-devel/turtlebot3_teleop/turtlebot3_teleop/script/teleop_keyboard.py
+
 import select
 import sys
 import termios
