@@ -100,6 +100,8 @@ def main():
     # define and initialize variables
     current_velocity = Twist()
     next_velocity = Twist()
+    next_velocity_lin_x = 0.0
+    next_velocity_ang_z = 0.0
 
     set_velocity(
         current_velocity,
@@ -111,10 +113,9 @@ def main():
         dict(x = 0.0, y = 0.0, z = 0.0),
         dict(x = 0.0, y = 0.0, z = 0.0),
     )
-    next_velocity_lin_x = 0.0
-    next_velocity_ang_z = 0.0
 
     try:
+        # main loop
         while(1):
             # get input from a keyboard
             key = get_key()
@@ -163,6 +164,8 @@ def main():
 
             # publish message
             pub.publish(next_velocity)
+
+            # next loop...
     finally:
         # before exiting this program, stop TB3
         set_velocity(
