@@ -30,14 +30,6 @@ LIN_VEL_STEP_SIZE = 0.01
 
 
 #
-# define variables
-#
-
-current_velocity = Twist()
-next_velocity = Twist()
-
-
-#
 # define functions
 #
 
@@ -79,7 +71,15 @@ def check_ang_limit_velocity(input_vel):
 
 def print_velocity(velocity):
     """Print velocity"""
-    pass
+    print(
+        'currentry:\n' +
+        '    linear velocity: x={:.3f}, y={:.3f}, z={:.3f}\n'.format(
+            velocity.linear.x, velocity.linear.y, velocity.linear.z,
+        ) +
+        '   angular velocity: x={:.3f}, y={:.3f}, z={:.3f}'.format(
+            velocity.angular.x, velocity.angular.y, velocity.angular.z,
+        )
+    )
 
 def set_velocity(target_vel, linear, angular):
     """Set the values for Twist"""
@@ -97,7 +97,10 @@ def main():
     node = rclpy.create_node('teleop_burger')
     pub = node.create_publisher(Twist, '/cmd_vel', QoSProfile(depth = 10))
 
-    # initialize
+    # define and initialize variables
+    current_velocity = Twist()
+    next_velocity = Twist()
+
     set_velocity(
         current_velocity,
         dict(x = 0.0, y = 0.0, z = 0.0),
@@ -112,46 +115,54 @@ def main():
     next_velocity_ang_z = 0.0
 
     try:
-        key = get_key()
+        while(1):
+            # get input from a keyboard
+            key = get_key()
+            # print('key: "{}"'.format(key))  # debug
 
-        if key == 'w':
-            # forward
-            next_velocity_lin_x = current_velocity.linear.x + LIN_VEL_STEP_SIZE
-            next_velocity_ang_z = current_velocity.angular.z
-        elif key == 'a':
-            # left rotation
-            next_velocity_lin_x = current_velocity.linear.x
-            next_velocity_ang_z = current_velocity.angular.z + ANG_VEL_STEP_SIZE
-        elif key == 's':
-            # backward
-            next_velocity_lin_x = current_velocity.linear.x - LIN_VEL_STEP_SIZE
-            next_velocity_ang_z = current_velocity.angular.z
-        elif key == 'd':
-            # right rotation
-            next_velocity_lin_x = current_velocity.linear.x
-            next_velocity_ang_z = current_velocity.angular.z - ANG_VEL_STEP_SIZE
-        elif key == ' ':
-            # stop
-            next_velocity_lin_x = 0.0
-            next_velocity_ang_z = 0.0
-        else:
-            # without change
-            next_velocity_lin_x = current_velocity.linear.x
-            next_velocity_ang_z = current_velocity.angular.z
+            if key == 'w':
+                # forward
+                next_velocity_lin_x = check_lin_limit_velocity(current_velocity.linear.x + LIN_VEL_STEP_SIZE)
+                next_velocity_ang_z = current_velocity.angular.z
+            elif key == 'a':
+                # left rotation
+                next_velocity_lin_x = current_velocity.linear.x
+                next_velocity_ang_z = check_ang_limit_velocity(current_velocity.angular.z + ANG_VEL_STEP_SIZE)
+            elif key == 's':
+                # backward
+                next_velocity_lin_x = check_lin_limit_velocity(current_velocity.linear.x - LIN_VEL_STEP_SIZE)
+                next_velocity_ang_z = current_velocity.angular.z
+            elif key == 'd':
+                # right rotation
+                next_velocity_lin_x = current_velocity.linear.x
+                next_velocity_ang_z = check_ang_limit_velocity(current_velocity.angular.z - ANG_VEL_STEP_SIZE)
+            elif key == ' ':
+                # stop
+                next_velocity_lin_x = 0.0
+                next_velocity_ang_z = 0.0
+            else:
+                # without change
+                next_velocity_lin_x = current_velocity.linear.x
+                next_velocity_ang_z = current_velocity.angular.z
 
-        # update velocity
-        set_velocity(
-            next_velocity,
-            dict(x = next_velocity_lin_x, y = 0.0, z = 0.0),
-            dict(x = 0.0, y = 0.0, z = next_velocity_ang_z),
-        )
+            # update velocity
+            set_velocity(
+                next_velocity,
+                dict(x = next_velocity_lin_x, y = 0.0, z = 0.0),
+                dict(x = 0.0, y = 0.0, z = next_velocity_ang_z),
+            )
 
-        # if you change the velocity, print those values
-        if next_velocity != current_velocity:
-            print_velocity()
+            # if you change the velocity, print those values and update values
+            if next_velocity != current_velocity:
+                print_velocity(next_velocity)
+                set_velocity(
+                    current_velocity,
+                    dict(x = next_velocity_lin_x, y = 0.0, z = 0.0),
+                    dict(x = 0.0, y = 0.0, z = next_velocity_ang_z),
+                )
 
-        # publish message
-        pub.publish(next_velocity)
+            # publish message
+            pub.publish(next_velocity)
     finally:
         # before exiting this program, stop TB3
         set_velocity(
