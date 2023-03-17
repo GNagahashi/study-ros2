@@ -7,5 +7,3 @@ lxterminalの設定ファイルは`~/.config/lxterminal/`にある(ubuntuで後�
 
 このリポジトリにある`bashrc_ex.sh`の中身を`~/.bashrc`に書き込むとプロンプトが変更され`ls`コマンドの色付けが取れる
 
-todo:
-- 関数型でteleop_burgerを書く
