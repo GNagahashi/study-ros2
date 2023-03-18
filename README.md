@@ -1,9 +1,15 @@
 # study_ros2
 
-## メモ
-lxterminalの設定ファイルは`~/.config/lxterminal/`にある(ubuntuで後から`sudo apt install lxterminal`をした場合)
+ROSに関するメモをまとめておくリポジトリ
 
-設定ファイルの読み込みは`/etc/profile`→`/etc/bash.bashrc`→`~/.bashrc`の模様？
-
-このリポジトリにある`bashrc_ex.sh`の中身を`~/.bashrc`に書き込むとプロンプトが変更され`ls`コマンドの色付けが取れる
-
+```
+study_ros2/
+├── packages/           パッケージ置き場
+│   └── tb3_teleop/     TB3を操作するためのパッケージ(turtlebot3_teleop teleop_keyboardの改造版)
+│
+├── programs/           プログラム置き場
+│
+├── README.md           りどみ
+├── wget_packages.md    パッケージをwgetで引っ張って来るためのコマンドをまとめたmdファイル
+└── wget_programs.md    プログラムをwgetで引っ張って来るためのコマンドをまとめたmdファイル
+```
