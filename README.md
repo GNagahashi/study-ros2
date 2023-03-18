@@ -9,7 +9,5 @@ study_ros2/
 │
 ├── programs/           プログラム置き場
 │
-├── README.md           りどみ
-├── wget_packages.md    パッケージをwgetで引っ張って来るためのコマンドをまとめたmdファイル
-└── wget_programs.md    プログラムをwgetで引っ張って来るためのコマンドをまとめたmdファイル
+└── README.md           りどみ
 ```
