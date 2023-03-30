@@ -5,8 +5,17 @@
 
 - [Logging](https://docs.ros.org/en/foxy/Tutorials/Demos/Logging-and-logger-configuration.html)
 - [About logging and logger configuration](https://docs.ros.org/en/foxy/Concepts/About-Logging.html)
+- [rcl](https://github.com/ros2/rcl)
+- [rcl_logging](https://github.com/ros2/rcl_logging)
+- [log4cxx](https://github.com/apache/logging-log4cxx)
 
 ## 調査
+
+`rcutils`パッケージと`rcl_logging`パッケージの上に`rcl`パッケージがあり、更にその上に`rclpy`や`rclcpp`がある模様
+INFOやWARNといったSeverity levelはROS2のログシステムで使われている(?)`spdlog`ライブラリに依存しているものである可能性がある(要調査)
+この場合、現状やろうとしていることはかなり厳しいことになる(spdlogに手を加えることは避けたい)
+この仮定が正しい場合、逆に、spdlogに何か丁度良さそうなステータス(INFOみたいなやつ)があればそれを利用しても良い
+
 
 ### 重大度レベル(Severity level)とは
 ROS2が出力するログには重大度が設定されており、以下の5種類がある
@@ -19,6 +28,8 @@ ROS2が出力するログには重大度が設定されており、以下の5種
 
 ROS2には重大度を設定することが可能であり、設定した重大度を基準にログの表示/非表示を管理できる
 例：重大度レベルとしてINFO以上を指定すると、INFO未満であるDEBUGは出力されなくなる(表示されないだけでログファイルには保存されているかも？)
+
+重大度の値はrcutilsで定義されているものと同じでなければ行けない(`LoggingSeverity`のコメントに書いてある)
 
 
 
@@ -66,6 +77,10 @@ self.get_logger().info('Publishing: "{}"'.format(msg.data), name = 'node_name')
 ROS2のログシステムのAPIは`rcutils`パッケージが担当している模様  
 恐らく、rclcppもこのパッケージをincludeして使っている？(要確認)  
 つまり、この`rcutils`を編集することで独自のログレベル(LoggingSeverity)を追加することができる(さらにrclpyの実装も必要だが)
+
+重大度のレベルが設定されているのはここ
+- [https://github.com/ros2/rcutils/blob/rolling/include/rcutils/logging.h#L171](https://github.com/ros2/rcutils/blob/rolling/include/rcutils/logging.h#L171)
+
 
 ## 実験01
 rclpyだけを編集してみた例
@@ -120,7 +135,7 @@ if __name__ == '__main__':
 ```
 
 
-## 実装
+## 実装 テスト1
 パッケージとして`rclpy`を編集する場合、ファイルの位置は以下の通り
 
 - `info()`が定義されているのは`rclpy/rclpy/impl/rcutils_logger.py`
@@ -131,3 +146,6 @@ if __name__ == '__main__':
 - `LoggingSeverity`に新しくレベルを追加
 - `node.get_logger().new()`のような形で呼び出せるようにする
 
+### 編集箇所
+
+- `rcutils/rcutils/logging.py`
