@@ -1,7 +1,26 @@
 # ROS2のログ関係の調査とメモ
 [2023-03-28] 作成
 
+参考資料
+
+- [Logging](https://docs.ros.org/en/foxy/Tutorials/Demos/Logging-and-logger-configuration.html)
+- [About logging and logger configuration](https://docs.ros.org/en/foxy/Concepts/About-Logging.html)
+
 ## 調査
+
+### 重大度レベル(Severity level)とは
+ROS2が出力するログには重大度が設定されており、以下の5種類がある
+
+- DEBUG
+- INFO
+- WARN
+- ERROR
+- FATAL
+
+ROS2には重大度を設定することが可能であり、設定した重大度を基準にログの表示/非表示を管理できる
+例：重大度レベルとしてINFO以上を指定すると、INFO未満であるDEBUGは出力されなくなる(表示されないだけでログファイルには保存されているかも？)
+
+
 
 ### rclpy
 `Node.get_logger().info()`の`info()`は`/opt/ros/foxy/lib/python3.8/site-packages/rclpy/impl/rcutils_logger.py`に定義されている(vscodeで参照)
@@ -53,6 +72,10 @@ rclpyだけを編集してみた例
 `LoggingSeverity`に新しく`HCT2`を追加し、`RcutilsLogger`に`hct2()`を追加した
 IntEnumの値はINFOと同じ20に設定しているため、動かすと[INFO] [1234.5678] [node_name]: messageのように表示される
 
+参考資料
+
+- [console.log](https://gist.github.com/DYGV/fccfdf481e05a77f5cc7407dcaba31ff)
+
 ```py
 import rclpy
 
@@ -61,12 +84,12 @@ from rclpy.logging import LoggingSeverity
 from rclpy.impl.rcutils_logger import RcutilsLogger
 from std_msgs.msg import String
 
-LoggingSeverity.HCT2 = 20
+LoggingSeverity.NEW = 20  # LoggingSeverityはIntEnum, 20はINFOと同じ値
 
-def hct2(self, message, **kwargs):
-    return self.log(message, LoggingSeverity.HCT2, **kwargs)
+def new(self, message, **kwargs):
+    return self.log(message, LoggingSeverity.NEW, **kwargs)
 
-RcutilsLogger.hct2 = hct2
+RcutilsLogger.new = new  # これがinfo()の代わり
 
 
 class LogTest(Node):
@@ -80,7 +103,7 @@ class LogTest(Node):
     def timer_callback(self):
         msg = String(data = 'Hello world {}'.format(self.i))
         self.publisher_.publish(msg)
-        self.get_logger().hct2('Publishing: "{}"'.format(msg.data))
+        self.get_logger().new('Publishing: "{}"'.format(msg.data))
         # self.get_logger().info('Publishing: "{}"'.format(msg.data))
         self.i += 1
 
@@ -105,6 +128,6 @@ if __name__ == '__main__':
 - `_rclpy_logging`が定義されているのは`rclpy/src/rclpy/_rclpy_logging.c`
 
 考え：
-- `LoggingSeverity`に新しく`hCT2`を追加
-- `hct2()`を作成して呼び出せるようにする(`node.get_logger().hct2()`のような形)
+- `LoggingSeverity`に新しくレベルを追加
+- `node.get_logger().new()`のような形で呼び出せるようにする
 
