@@ -1,3 +1,5 @@
+# 目標：tb4を操作するために使うトピック, サービスを特定する。また、各ノード, トピック, サービスの役割を特定する。
+
 ## 参考資料
 
 - https://turtlebot.github.io/turtlebot4-user-manual/software/turtlebot4_simulator.html
@@ -6,7 +8,7 @@
 
 ---
 
-## 目標：tb4を操作するために使うトピック, サービスを特定する。また、各ノード, トピック, サービスの役割を特定する。
+## start
 
 ```
 ros2 launch turtlebot4_ignition_bringup turtlebot4_ignition.launch.py
@@ -356,3 +358,85 @@ https://github.com/iRobotEducation/create3_sim/blob/7fccefe91a300ea945aa81df09e7
 
 結局、`motion_control`ノードの`undock`アクションにどのような操作ができれば良いのかがわかればいいので、HMI?(gazeboを起動するとくっついてくるGUIアプリ)を調査してみる
 
+
+-----
+
+```
+ros2 launch turtlebot4_ignition_bringup turtlebot4_ignition.launch.py robot_name:=tb4 rviz:=true nav2:=true localization:=true
+```
+
+rqt_graph: `rosgraph_01.png`, `rosgraph_01.svg`
+
+```sh
+[rviz2-57] Start navigation
+[rviz2-57] [INFO] [1687698875.592896404] [rviz2]: NavigateToPose will be called using the BT Navigator's default behavior tree.
+[bt_navigator-53] [INFO] [1687698875.593344163] [bt_navigator]: Begin navigating from current location to (1.16, -5.27)
+[controller_server-49] [INFO] [1687698875.624165842] [controller_server]: Received a goal, begin computing control effort.
+[controller_server-49] [WARN] [1687698875.624215835] [controller_server]: No goal checker was specified in parameter 'current_goal_checker'. Server will use only plugin loaded general_goal_checker . This warning will appear once.
+[controller_server-49] [INFO] [1687698876.674382668] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698877.724381865] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698878.774384425] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698879.774400538] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698880.824381345] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698881.874385020] [controller_server]: Passing new path to controller.
+[motion_control-35] [WARN] [1687698882.036740940] [motion_control]: Ignoring velocities commanded while an autonomous behavior is running!
+[controller_server-49] [INFO] [1687698882.874381220] [controller_server]: Passing new path to controller.
+[motion_control-35] [WARN] [1687698883.186704800] [motion_control]: Ignoring velocities commanded while an autonomous behavior is running!
+[controller_server-49] [INFO] [1687698883.924382777] [controller_server]: Passing new path to controller.
+[motion_control-35] [WARN] [1687698884.336668173] [motion_control]: Ignoring velocities commanded while an autonomous behavior is running!
+[controller_server-49] [INFO] [1687698884.974383831] [controller_server]: Passing new path to controller.
+[motion_control-35] [WARN] [1687698885.486720734] [motion_control]: Ignoring velocities commanded while an autonomous behavior is running!
+[controller_server-49] [INFO] [1687698885.974400493] [controller_server]: Passing new path to controller.
+[motion_control-35] [WARN] [1687698886.886555804] [motion_control]: Ignoring velocities commanded while an autonomous behavior is running!
+[controller_server-49] [INFO] [1687698887.024383582] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698888.024382409] [controller_server]: Passing new path to controller.
+[motion_control-35] [WARN] [1687698888.036540529] [motion_control]: Ignoring velocities commanded while an autonomous behavior is running!
+[controller_server-49] [INFO] [1687698889.074384319] [controller_server]: Passing new path to controller.
+[motion_control-35] [WARN] [1687698889.486519978] [motion_control]: Ignoring velocities commanded while an autonomous behavior is running!
+[controller_server-49] [INFO] [1687698890.124383898] [controller_server]: Passing new path to controller.
+[motion_control-35] [WARN] [1687698890.686406219] [motion_control]: Ignoring velocities commanded while an autonomous behavior is running!
+[controller_server-49] [INFO] [1687698891.124384739] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698892.174403202] [controller_server]: Passing new path to controller.
+[motion_control-35] [WARN] [1687698892.286408283] [motion_control]: Ignoring velocities commanded while an autonomous behavior is running!
+[controller_server-49] [INFO] [1687698893.174382095] [controller_server]: Passing new path to controller.
+[motion_control-35] [WARN] [1687698893.486382786] [motion_control]: Ignoring velocities commanded while an autonomous behavior is running!
+[controller_server-49] [INFO] [1687698894.224426819] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698895.274415917] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698896.274387709] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698897.324385769] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698898.324384062] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698899.374401891] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698900.424394558] [controller_server]: Passing new path to controller.
+[motion_control-35] [WARN] [1687698900.436090520] [motion_control]: Ignoring velocities commanded while an autonomous behavior is running!
+[controller_server-49] [INFO] [1687698901.424391463] [controller_server]: Passing new path to controller.
+[motion_control-35] [WARN] [1687698901.586100374] [motion_control]: Ignoring velocities commanded while an autonomous behavior is running!
+[controller_server-49] [INFO] [1687698902.474381163] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698903.474379935] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698904.524385733] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698905.574407173] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698906.574382888] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698907.624385043] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698908.624380457] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698909.674386160] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698910.724483121] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698911.724382892] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698912.774385625] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698913.774386679] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698914.824382695] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698915.874415018] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698916.874404023] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698917.924383966] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698918.924383183] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698919.974384418] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698921.024384776] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698922.024382725] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698923.074386058] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698924.074398477] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698925.124383046] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698926.174389446] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698927.174387402] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698928.224384499] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698929.224382037] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687698930.028027552] [controller_server]: Reached the goal!
+[bt_navigator-53] [INFO] [1687698930.063484578] [bt_navigator]: Goal succeeded
+```
