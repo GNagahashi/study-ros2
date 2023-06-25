@@ -440,3 +440,302 @@ rqt_graph: `rosgraph_01.png`, `rosgraph_01.svg`
 [controller_server-49] [INFO] [1687698930.028027552] [controller_server]: Reached the goal!
 [bt_navigator-53] [INFO] [1687698930.063484578] [bt_navigator]: Goal succeeded
 ```
+
+second time
+
+```sh
+[rviz2-57] Start navigation
+[rviz2-57] [INFO] [1687701006.808207390] [rviz2]: NavigateToPose will be called using the BT Navigator's default behavior tree.
+[bt_navigator-53] [INFO] [1687701006.808640060] [bt_navigator]: Begin navigating from current location to (2.00, 2.06)
+[controller_server-49] [INFO] [1687701006.839352048] [controller_server]: Received a goal, begin computing control effort.
+[controller_server-49] [WARN] [1687701006.839422017] [controller_server]: No goal checker was specified in parameter 'current_goal_checker'. Server will use only plugin loaded general_goal_checker . This warning will appear once.
+[controller_server-49] [INFO] [1687701007.889598208] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701008.939593724] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701009.939689678] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701010.989594228] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701011.989590253] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701013.039595106] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701014.089593737] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701015.089550972] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701016.139623935] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701017.139590689] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701018.189592326] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701019.239598718] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701020.239596336] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701021.289631350] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701022.289616539] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701023.339594490] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701024.389592793] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701025.389593419] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701026.439596018] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701027.439593720] [controller_server]: Passing new path to controller.
+[controller_server-49] [INFO] [1687701027.742734310] [controller_server]: Reached the goal!
+[bt_navigator-53] [INFO] [1687701027.778807117] [bt_navigator]: Goal succeeded
+
+```
+
+echo /rosout
+
+```sh
+$ ros2 topic echo /rosout
+stamp:
+  sec: 1687701006
+  nanosec: 808207390
+level: 20
+name: rviz2
+msg: NavigateToPose will be called using the BT Navigator's default behavior tree.
+file: ./src/nav2_panel.cpp
+function: startNavigation
+line: 782
+---
+stamp:
+  sec: 1687701006
+  nanosec: 808640060
+level: 20
+name: bt_navigator
+msg: Begin navigating from current location to (2.00, 2.06)
+file: ./src/navigators/navigate_to_pose.cpp
+function: initializeGoalPose
+line: 207
+---
+stamp:
+  sec: 1687701006
+  nanosec: 839352048
+level: 20
+name: controller_server
+msg: Received a goal, begin computing control effort.
+file: ./src/controller_server.cpp
+function: computeControl
+line: 348
+---
+stamp:
+  sec: 1687701006
+  nanosec: 839422017
+level: 30
+name: controller_server
+msg: No goal checker was specified in parameter 'current_goal_checker'. Server will use only plugin loaded general_goal_checker . Thi...
+file: ./src/controller_server.cpp
+function: findGoalCheckerId
+line: 324
+---
+stamp:
+  sec: 1687701007
+  nanosec: 889598208
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701008
+  nanosec: 939593724
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701009
+  nanosec: 939689678
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701010
+  nanosec: 989594228
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701011
+  nanosec: 989590253
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701013
+  nanosec: 39595106
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701014
+  nanosec: 89593737
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701015
+  nanosec: 89550972
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701016
+  nanosec: 139623935
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701017
+  nanosec: 139590689
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701018
+  nanosec: 189592326
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701019
+  nanosec: 239598718
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701020
+  nanosec: 239596336
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701021
+  nanosec: 289631350
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701022
+  nanosec: 289616539
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701023
+  nanosec: 339594490
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701024
+  nanosec: 389592793
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701025
+  nanosec: 389593419
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701026
+  nanosec: 439596018
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701027
+  nanosec: 439593720
+level: 20
+name: controller_server
+msg: Passing new path to controller.
+file: ./src/controller_server.cpp
+function: updateGlobalPath
+line: 525
+---
+stamp:
+  sec: 1687701027
+  nanosec: 742734310
+level: 20
+name: controller_server
+msg: Reached the goal!
+file: ./src/controller_server.cpp
+function: computeControl
+line: 398
+---
+stamp:
+  sec: 1687701027
+  nanosec: 778807117
+level: 20
+name: bt_navigator
+msg: Goal succeeded
+file: /opt/ros/humble/include/nav2_behavior_tree/bt_action_server_impl.hpp
+function: executeCallback
+line: 230
+---
+```
