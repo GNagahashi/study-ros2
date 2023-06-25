@@ -11,26 +11,35 @@
 
 
 ```py
-# 指定したパッケージのshareディレクトリのパスを取得する関数(?)
-# pythonパッケージの作成に使っているament(?)が提供しているAPIの1つ
+# 指定したパッケージのshareディレクトリのパスを取得する関数
+# `/opt/ros/humble/share/パッケージ名`のディレクトリを得ることができる
+# つまり、指定したパッケージ直下のディレクトリ, ファイルにアクセスするためのパスが得られる
 from ament_index_python.packages import get_package_share_directory
 
 # launchファイルはgenerate_launch_description関数がLaunchDescriptionを返す構造にしなければならない
 from launch import LaunchDescription
-# launchファイルを実行する際のコマンドライン引数?ROS2パラメータ?を指定するためのもの?
+# launchファイルを実行する際の引数を設定するためのクラス
+# 適切に設定すると、ros2 launchで実行するときに入力補足として出てきてくれる
+# IncludeLaunchDescriptionクラス(後述)の引数として設定することもできる
+# 引数にデフォルト値が設定された場合、その引数はオプション引数となる
+# 一方、引数にデフォルト値を設定しない場合、非オプション引数となり、値が指定されない場合エラーになる模様
+# 引数に選択肢がある場合、選択肢以外の値が設定されるとエラーが発生する
 from launch.actions import DeclareLaunchArgument
-# 他のlaunchファイルを実行するためのもの?
+# 他のlaunchファイルを実行するためのクラス
+# 実行するlaunchファイルはPythonLaunchDescriptionSourceクラスで指定する
+# 実行するlaunchファイルの引数はlaunch_argumentsで指定する
 from launch.actions import IncludeLaunchDescription
-# 他のパッケージにあるlaunchファイルを引っ張ってくるためのもの?
+# 指定されたファイルパスにあるlaunchファイルを引っ張ってくるためのクラス
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-# LaunchConfigurationは他のlaunchファイルを呼び出すときに引数(コマンドライン?ROS2パラメータ?)を設定するためのもの?
-# PathJoinSubstitutionは呼び出すlaunchファイルのパスを作成するためのもの?
+# LaunchConfiguration
+#     DeclareLaunchArgument、つまりlaunchファイルの実行時に渡す引数(iamge:=/camera/image_rawみたいなやつ)を取得するためのクラス
+# PathJoinSubstitution
+#     プラットフォームに依存しない方法でパスを作成するためのクラス
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 
-# ARGUMENTSは定数として宣言した配列
-# launchファイルの
 ARGUMENTS = [
+    # DeclareLaunchArgument(引数名, default_value=引数のデフォルト値, choices=引数に指定できる値の選択肢(リスト), description=引数の説明)
     DeclareLaunchArgument('namespace', default_value='',
                           description='Robot namespace'),
     DeclareLaunchArgument('rviz', default_value='false',
@@ -64,8 +73,9 @@ def generate_launch_description():
     robot_spawn_launch = PathJoinSubstitution(
         [pkg_turtlebot4_ignition_bringup, 'launch', 'turtlebot4_spawn.launch.py'])
 
-    # ignition.launch.py(launchファイル)の設定
-    # IncludeLaunchDescription(呼び出すlaunchファイル, launch_arguments=[呼び出すlaunchファイルに渡す引数の設定])?
+    # turtlebot4_ignition_bringupパッケージが持つlaunchファイル: ignition.launch.pyを実行する
+    # IncludeLaunchDescription(呼び出すlaunchファイル, launch_arguments=[呼び出すlaunchファイルに渡す引数])
+    # LaunchConfigurationを使ってARGUMENTSから引数に指定する値を取り出している
     ignition = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ignition_launch]),
         launch_arguments=[
@@ -73,6 +83,7 @@ def generate_launch_description():
         ]
     )
 
+    # turtlebot4_ignition_bringupパッケージが持つlaunchファイル: turtlebot4_spawn.launch.pyを実行する
     robot_spawn = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([robot_spawn_launch]),
         launch_arguments=[
@@ -85,7 +96,9 @@ def generate_launch_description():
     )
 
     # Create launch description and add actions
+    # このlaunchファイル(turtlebot4_ignition_bringupパッケージのturtlebot4_ignition.launch.py)を実行するときの引数を設定する
     ld = LaunchDescription(ARGUMENTS)
+    # このlaunchファイルと一緒に実行するlaunchファイルを設定する
     ld.add_action(ignition)
     ld.add_action(robot_spawn)
     return ld
